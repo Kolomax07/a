@@ -75,7 +75,7 @@ class TestNutrientes(unittest.TestCase):
         self.assertIn("Límite diario de correcciones de pH", n.alarmas[0])
 
     def test_sondas_averiadas_o_fuera_del_agua(self):
-        for ec, ph in ((None, 6.0), (9.0, 6.0), (1.2, None), (1.2, 0.5)):
+        for ec, ph in ((None, 6.0), (9.0, 6.0), (0.0, 6.0), (1.2, None), (1.2, 0.5)):
             n = controlador()
             self.assertEqual(n.actualizar(lectura("10:00", ec=ec, ph=ph)), [])
             self.assertIn("no válida", n.alarmas[0])
@@ -90,7 +90,7 @@ class TestNutrientes(unittest.TestCase):
 
     def test_lavado_solo_corrige_ph(self):
         n = controlador(ec_objetivo=0)
-        self.assertEqual(n.actualizar(lectura("10:00", ec=0.3, ph=6.0)), [])
+        self.assertEqual(n.actualizar(lectura("10:00", ec=0.0, ph=6.0)), [])  # agua de ósmosis: válida
         self.assertEqual(n.alarmas, [])
         self.assertEqual(n.actualizar(lectura("10:15", ec=0.3, ph=6.6)), [("ph_down", 0.5)])
 

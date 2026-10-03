@@ -11,6 +11,7 @@ from ..modelos import Lecturas
 # la sonda está averiada, descalibrada o fuera del agua.
 RANGO_EC_VALIDO = (0.0, 6.0)
 RANGO_PH_VALIDO = (2.0, 12.0)
+EC_MINIMA_CON_NUTRIENTES = 0.05  # ~agua destilada: sonda al aire o depósito sin preparar
 
 
 class ControladorNutrientes:
@@ -48,16 +49,22 @@ class ControladorNutrientes:
 
         if lecturas.deposito_ok is False:
             return []  # con nivel bajo las sondas pueden estar fuera del agua
+        c = self.config
+        maneja_ec = self.ec_objetivo > 0
         ec, ph = lecturas.ec, lecturas.ph
-        if ec is None or not RANGO_EC_VALIDO[0] <= ec <= RANGO_EC_VALIDO[1]:
-            self.alarmas.append("Lectura de EC no válida: dosificación en pausa, revisa la sonda")
+        if (
+            ec is None
+            or not RANGO_EC_VALIDO[0] <= ec <= RANGO_EC_VALIDO[1]
+            or (maneja_ec and ec < EC_MINIMA_CON_NUTRIENTES)
+        ):
+            self.alarmas.append(
+                "Lectura de EC no válida (¿sonda fuera del agua o depósito sin nutrientes?): dosificación en pausa"
+            )
             return []
         if ph is None or not RANGO_PH_VALIDO[0] <= ph <= RANGO_PH_VALIDO[1]:
             self.alarmas.append("Lectura de pH no válida: dosificación en pausa, revisa la sonda")
             return []
 
-        c = self.config
-        maneja_ec = self.ec_objetivo > 0
         if maneja_ec and ec > self.ec_objetivo + c.margen_ec_alta:
             self.alarmas.append("EC alta en el depósito: añade agua sin nutrientes")
 

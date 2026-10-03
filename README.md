@@ -9,9 +9,22 @@ Controlador automático para un armario de cultivo, con cuatro sistemas:
 | **Riego** | Riega cuando el sustrato baja del umbral y espera a que el agua se reparta antes de volver a regar. Tiene un máximo de riegos al día, no riega de noche (configurable) y no arranca la bomba si el depósito está vacío. | Sensor capacitivo + flotador → bomba de riego |
 | **Nutrientes** | Mantiene la EC y el pH del depósito con dosis pequeñas y esperas de mezcla. Primero ajusta la EC (parte A, pausa, parte B) y después el pH. Tiene límites diarios de dosis y descarta las lecturas imposibles para que una sonda rota no vacíe los bidones. | Sondas EC y pH → 4 bombas peristálticas (A, B, pH+, pH-) |
 
-Además guarda un **histórico CSV** con todas las lecturas (incluido el VPD), los estados de los relés, las acciones y las alarmas. Si falla un sensor, cada sistema pasa a un **estado seguro**. Al parar el programa por Ctrl+C, por un error o al detener el servicio, **apaga todos los relés**.
+Si falla un sensor, cada sistema pasa a un **estado seguro**, y al parar el programa se **apagan todos los relés**.
 
 > ⚖️ Comprueba la legislación de tu país sobre el autocultivo antes de usarlo.
+
+## Dos versiones
+
+Las dos usan la misma lógica de control y los mismos tests:
+
+| Versión | Dónde | Ventajas |
+|---|---|---|
+| **ESP32** | [`esp32/`](esp32/README.md) | Placa barata, panel web desde el móvil, arranque instantáneo y nada que mantener |
+| **Raspberry Pi** (Python) | este directorio | Histórico CSV completo y simulador para probar configuraciones en el PC |
+
+El resto de este documento describe la versión Python. La del ESP32 tiene su propio [README](esp32/README.md).
+
+La versión Python guarda además un **histórico CSV** con todas las lecturas (incluido el VPD), los estados de los relés, las acciones y las alarmas.
 
 ## Probarlo sin hardware (simulación)
 

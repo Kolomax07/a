@@ -1,0 +1,94 @@
+# Configuración del controlador de cultivo.
+# Copia este archivo como config.toml y ajústalo:  cp config.ejemplo.toml config.toml
+# Cualquier valor que borres usa el valor por defecto.
+
+# Etapa actual: plantula | vegetativo | floracion | floracion_tardia | lavado
+# Cambia a "floracion" para pasar a 12/12 y forzar la floración.
+etapa = "vegetativo"
+
+# Medio de cultivo, define el rango de pH: tierra (6.2–6.8) | coco (5.7–6.3) | hidro (5.6–6.2)
+medio = "coco"
+
+intervalo_s = 60                 # segundos entre ciclos de control
+registro_csv = "registro.csv"    # histórico de lecturas y acciones
+
+[luz]
+hora_encendido = "06:00"         # inicio del periodo de luz (las horas de luz dependen de la etapa)
+umbral_lux = 500                 # por debajo se considera oscuro
+minutos_tolerancia = 10          # minutos antes de avisar de lámpara fundida o fuga de luz
+
+[humedad]
+histeresis = 3.0                 # % HR de banda muerta para humidificador/deshumidificador
+histeresis_temp = 1.0            # °C de banda muerta para el extractor
+tiempo_minimo_ciclo_s = 120      # tiempo mínimo entre encendidos/apagados de cada equipo
+
+[riego]
+humedad_suelo_min = 35           # % de humedad del sustrato por debajo del cual se riega
+duracion_s = 20                  # segundos de bomba por riego
+espera_absorcion_min = 45        # minutos de espera tras regar antes de volver a evaluar
+max_riegos_dia = 6               # límite de seguridad
+solo_con_luz = true              # no regar durante el periodo de oscuridad
+
+[nutrientes]
+tolerancia_ec = 0.15             # mS/cm por debajo del objetivo antes de dosificar
+margen_ec_alta = 0.4             # mS/cm por encima del objetivo para avisar
+ml_por_dosis = 2.0               # ml de cada parte (A y B) por dosis
+ml_por_dosis_ph = 0.5            # ml de pH+/pH- por dosis
+caudal_ml_s = 1.0                # calibra tus bombas peristálticas: ml que bombean en 1 s
+espera_mezcla_min = 15           # minutos entre dosis para que se mezcle la solución
+pausa_entre_partes_s = 30        # pausa entre la parte A y la B
+max_dosis_nutrientes_dia = 6
+max_dosis_ph_dia = 8
+# ph_min = 5.8                   # descomenta para anular el rango del medio
+# ph_max = 6.2
+
+# Ajusta los objetivos de cualquier etapa a tu genética y a tu tabla de nutrientes.
+# Campos: horas_luz, hr_min, hr_max, temp_max, ec
+[etapas.vegetativo]
+horas_luz = 18
+hr_min = 50
+hr_max = 65
+temp_max = 28
+ec = 1.2
+
+[etapas.floracion]
+horas_luz = 12
+hr_min = 40
+hr_max = 50
+temp_max = 26
+ec = 1.6
+
+# --- Solo para la Raspberry Pi -------------------------------------------------
+
+[calibracion]
+# Usa "python -m cultivo --calibrar" y anota los voltajes que veas.
+suelo_v_seco = 2.80              # sensor de sustrato al aire
+suelo_v_mojado = 1.30            # sensor de sustrato sumergido en agua
+ph_v_7 = 1.50                    # sonda de pH en solución tampón pH 7
+ph_v_4 = 2.03                    # sonda de pH en solución tampón pH 4
+ec_v_0 = 0.0                     # sonda de EC en agua destilada
+ec_v_1413 = 1.0                  # sonda de EC en solución patrón 1,413 mS/cm
+
+[hardware]
+sensor_clima = "sht31"           # "sht31" (I2C), "dht22" o "ninguno"
+pin_dht = 4                      # GPIO del DHT22 (si lo usas)
+sensor_luz = true                # BH1750 por I2C
+direccion_ads = 0x48             # dirección I2C del ADS1115
+canal_suelo = 0                  # canales del ADS1115 (-1 = no instalado)
+canal_ec = 1
+canal_ph = 2
+pin_flotador = 17                # interruptor de nivel del depósito (-1 = no instalado)
+flotador_cerrado_con_agua = true
+reles_activos_en_bajo = true     # la mayoría de módulos de relés para Arduino/RPi
+
+# Número GPIO (BCM) de cada relé. Borra las líneas de los equipos que no tengas.
+[hardware.reles]
+luz = 5
+bomba_riego = 6
+humidificador = 13
+deshumidificador = 19
+extractor = 26
+dosificador_a = 12
+dosificador_b = 16
+ph_up = 20
+ph_down = 21

@@ -1,0 +1,13 @@
+[Unit]
+Description=Controlador de cultivo (riego, humedad, luz y nutrientes)
+After=network-online.target time-sync.target
+
+[Service]
+User=pi
+WorkingDirectory=/home/pi/cultivo
+ExecStart=/home/pi/cultivo/.venv/bin/python -m cultivo --config config.toml
+Restart=always
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target

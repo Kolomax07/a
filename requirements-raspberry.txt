@@ -1,0 +1,7 @@
+# Solo necesario en la Raspberry Pi. La simulación y los tests no usan dependencias externas.
+# gpiozero y lgpio vienen con Raspberry Pi OS: crea el entorno con --system-site-packages.
+adafruit-blinka
+adafruit-circuitpython-ads1x15>=3.0
+adafruit-circuitpython-sht31d
+adafruit-circuitpython-dht
+adafruit-circuitpython-bh1750

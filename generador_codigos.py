@@ -2,7 +2,7 @@
 """Generador de códigos con formato XX-XXXXX-XXXXX-XXXXX.
 
 Uso:
-    python3 generador_codigos.py [cantidad] [-o salida.tct]
+    python3 generador_codigos.py [cantidad] [-o salida.txt]
 
 Los códigos son únicos y usan letras mayúsculas y dígitos.
 """
@@ -34,8 +34,8 @@ def main() -> None:
     ap = argparse.ArgumentParser(description="Generador de códigos XX-XXXXX-XXXXX-XXXXX")
     ap.add_argument("cantidad", nargs="?", type=int, default=100,
                     help="número de códigos a generar (por defecto 100)")
-    ap.add_argument("-o", "--salida", default="codigos.tct",
-                    help="archivo de salida (por defecto codigos.tct)")
+    ap.add_argument("-o", "--salida", default="codigos.txt",
+                    help="archivo de salida (por defecto codigos.txt)")
     args = ap.parse_args()
     if args.cantidad < 1:
         ap.error("la cantidad debe ser mayor que 0")
